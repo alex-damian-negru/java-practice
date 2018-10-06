@@ -1,8 +1,8 @@
-Problem 1
+# Problem 1
 
 The prime 41, can be written as the sum of six consecutive primes:
 
-41 = 2 + 3 + 5 + 7 + 11 + 13
+> **41 = 2 + 3 + 5 + 7 + 11 + 13**
 
 This is the longest sum of consecutive primes that adds to a prime below one-hundred.
 
@@ -10,11 +10,11 @@ The longest sum of consecutive primes below one-thousand that adds to a prime, c
 
 Which prime, below one-million, can be written as the sum of the most consecutive primes?
 
-Problem 2
+# Problem 2
 
-Each character on a computer is assigned a unique code and the preferred standard is ASCII (American Standard Code for Information Interchange). For example, uppercase A = 65, asterisk (*) = 42, and lowercase k = 107.
+Each character on a computer is assigned a unique code and the preferred standard is ASCII (American Standard Code for Information Interchange). For example, uppercase `A = 65`, asterisk `(*) = 42`, and lowercase `k = 107`.
 
-A modern encryption method is to take a text file, convert the bytes to ASCII, then XOR each byte with a given value, taken from a secret key. The advantage with the XOR function is that using the same encryption key on the cipher text, restores the plain text; for example, 65 XOR 42 = 107, then 107 XOR 42 = 65.
+A modern encryption method is to take a text file, convert the bytes to ASCII, then XOR each byte with a given value, taken from a secret key. The advantage with the XOR function is that using the same encryption key on the cipher text, restores the plain text; for example, 65 `XOR 42 = 107`, then `107 XOR 42 = 65`.
 
 For unbreakable encryption, the key is the same length as the plain text message, and the key is made up of random bytes. The user would keep the encrypted message and the encryption key in different locations, and without both "halves", it is impossible to decrypt the message.
 
