@@ -6,37 +6,60 @@ public class ProblemOne {
 	/*
 	 * Generate all prime numbers up to n using the Sieve of Erastothenes algorithm.
 	 */
-	private ArrayList<Integer> generatePrimes(int n) {
-
-		ArrayList<Integer> primeList = new ArrayList<Integer>();
-		boolean prime[] = new boolean[n + 1];
-		Arrays.fill(prime, true);
+	private boolean[] initPrimes(int n) {
+		boolean primes[] = new boolean[n + 1];
+		Arrays.fill(primes, true);
 
 		for (int p = 2; p * p <= n; p++) {
-			if (prime[p] == true) {
+			if (primes[p] == true) {
 				for (int i = p * 2; i <= n; i += p)
-					prime[i] = false;
+					primes[i] = false;
 			}
 		}
-		
-		for (int i = 2; i < prime.length; i++) {
-			if (prime[i] == true) { 
-				primeList.add(i);
-			System.out.println(i);
-			}
-		}
-
-		return primeList;
+		return primes;
 	}
 
-	private void consecutivePrimeSum(int limit) {
+	private ArrayList<Integer> generatePrimes(int n) {
+
+		ArrayList<Integer> primesList = new ArrayList<Integer>();
+		boolean[] primes = initPrimes(n);
+
+		for (int i = 2; i < primes.length; i++) {
+			if (primes[i] == true) {
+				primesList.add(i);
+			}
+		}
+
+		return primesList;
+	}
+
+	private int consecutivePrimeSum(int limit) {
+		boolean[] isPrime = initPrimes(limit);
+		ArrayList<Integer> primes = generatePrimes(limit);
+
+		int maxSum = 0;
+		int maxRun = -1;
+		for (int i = 0; i < primes.size(); i++) {
+			int sum = 0;
+			for (int j = i; j < primes.size(); j++) {
+				sum += primes.get(j);
+				if (sum > limit)
+					break;
+				else if (j - i > maxRun && sum > maxSum && isPrime[sum]) {
+					maxSum = sum;
+					maxRun = j - i;
+				}
+			}
+		}
+		System.out.println(maxSum);
+		return maxSum;
 	}
 
 	public static void main(String args[]) {
 		ProblemOne problemOne = new ProblemOne();
 
 		long start = System.currentTimeMillis();
-		ArrayList<Integer> test = problemOne.generatePrimes(100);
+		problemOne.consecutivePrimeSum(1000);
 		long end = System.currentTimeMillis();
 		System.out.println("Executed in " + (end - start) + "ms");
 	}
