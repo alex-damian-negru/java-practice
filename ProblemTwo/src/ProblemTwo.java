@@ -12,7 +12,7 @@ public class ProblemTwo {
 		long start = System.currentTimeMillis();
 		decrypt();
 		long end = System.currentTimeMillis();
-		System.out.println("\nFinished in " + (end - start) + "ms");
+		System.out.println("\nFinished in " + (end - start) + " ms");
 	}
 
 	private static List<Byte> readFile() {
@@ -97,13 +97,16 @@ public class ProblemTwo {
 	private static void printCorrectText(String key) {
 		List<Byte> encryptedText = readFile();
 		char[] keyBits = key.toCharArray();
+		int asciiSum = 0;
 		int i = 0;
 		
 		for (Byte character : encryptedText) {
 			if (i == 3) i = 0;
 			char currChar = (char) (character ^ keyBits[i]);
+			asciiSum += currChar;
 			System.out.print(currChar);
 			i++;
 		}
+		System.out.println("\nASCII Sum: " + asciiSum);
 	}
 }
