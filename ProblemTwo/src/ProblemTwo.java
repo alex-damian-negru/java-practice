@@ -1,7 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ProblemTwo {
@@ -22,7 +24,7 @@ public class ProblemTwo {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		return bytes;
 	}
 
@@ -40,28 +42,41 @@ public class ProblemTwo {
 	}
 
 	private static void findKey() {
-		
 	}
 	
+	private static int frequencyAnalysis(String text) {
+		final String MOSTCOMMON = "etaoinshrdlu";
+		int score = 0;
+		
+		for (char letter : text.toLowerCase().toCharArray()) {
+			for (char common : MOSTCOMMON.toCharArray()) {
+				if (letter == common)
+					score++;
+			}
+		}
+		
+		return score;
+	}
+
 	private static void decrypt() {
 		// Get encrypted file & all key combinations
 		List<Byte> encryptedText = readFile();
 		List<String> keys = generateKeys();
+		Map<Integer, String> textScores = new HashMap<Integer, String>();
 		
-		// Put every key underneath the text
+		// Do XOR between the key and the values
 		for (String key : keys) {
-			for (int i = 0; i < encryptedText.size(); i++) {
-				System.out.print(encryptedText.get(i));
-			}
-			System.out.println();
+			StringBuilder plainText = new StringBuilder(); // Create new plainText
+			char[] testKey = key.toCharArray(); // Separate key to individual chars
+			int i = 0; // index for chars
 			
-			char[] testKey = key.toCharArray();
-			for (int i = 0, j = 0; i < encryptedText.size(); i++) {
-				if (j == 3) j = 0;
-				System.out.print(testKey[j]);
-				j++;
+			for (Byte character : encryptedText) { // Create text by XOR between each char and its' corresponding key char
+				if (i == 3) i = 0;
+				plainText.append(character ^ testKey[i]);
+				i++;
 			}
-			System.out.println("\n");
+			int score = frequencyAnalysis(plainText.toString());
+			textScores.put(score, plainText.toString());
 		}
 	}
 }
