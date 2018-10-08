@@ -29,11 +29,11 @@ public class ProblemTwo {
 	}
 
 	private static void decrypt() {
-		byte[] encryptedText = readFile();
 		StringBuilder plainText = new StringBuilder();
-		int maxScore = 0;
+		byte[] encryptedText = readFile();
 		char[] bestKey = null;
-		
+		int maxScore = 0;
+
 		for (char a = 'a'; a <= 'z'; a++) {
 			for (char b = 'a'; b <= 'z'; b++) {
 				for (char c = 'a'; c <= 'z'; c++) {
@@ -48,7 +48,7 @@ public class ProblemTwo {
 							isValid = false;
 							break;
 						}
-						
+
 						plainText.append(currChar);
 						i++;
 					}
@@ -62,14 +62,14 @@ public class ProblemTwo {
 				}
 			}
 		}
-		printCorrectText(encryptedText, String.valueOf(bestKey));
+		printDecryptedText(encryptedText, String.valueOf(bestKey));
 	}
-	
+
 	private static int frequencyAnalysis(String text) {
 		final String MOSTCOMMON = "etaoinshrdlu";
 		int score = 0;
 
-		for (int i=0; i<text.length(); i++) {
+		for (int i = 0; i < text.length(); i++) {
 			char letter = Character.toLowerCase(text.charAt(i));
 			if (MOSTCOMMON.indexOf(letter) != -1)
 				score++;
@@ -77,13 +77,13 @@ public class ProblemTwo {
 
 		return score;
 	}
-	
-	private static void printCorrectText(byte[] encryptedText, String key) {
+
+	private static void printDecryptedText(byte[] encryptedText, String key) {
 		StringBuilder stringBuilder = new StringBuilder(encryptedText.length);
 		char[] keyBits = key.toCharArray();
 		int asciiSum = 0;
 		int i = 0;
-		
+
 		for (Byte character : encryptedText) {
 			char currChar = (char) (character ^ keyBits[i % 3]);
 			asciiSum += currChar;
