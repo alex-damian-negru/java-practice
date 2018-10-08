@@ -31,39 +31,29 @@ public class ProblemTwo {
 		return bytes;
 	}
 
-	private static List<String> generateKeys() {
-		List<String> keyList = new ArrayList<String>();
+	private static void decrypt() {
+		List<Byte> encryptedText = readFile();
+		Map<Integer, char[]> scoredTexts = new HashMap<Integer, char[]>();
+		StringBuilder plainText = new StringBuilder();
 
 		for (char a = 'a'; a <= 'z'; a++) {
 			for (char b = 'a'; b <= 'z'; b++) {
 				for (char c = 'a'; c <= 'z'; c++) {
-					keyList.add("" + a + b + c);
+					plainText.setLength(0);
+					char[] testKey = new char[] { a, b, c };
+					int i = 0;
+
+					for (Byte character : encryptedText) {
+						char currChar = (char) (character ^ testKey[i % 3]);
+						plainText.append(currChar);
+						i++;
+					}
+					int score = frequencyAnalysis(plainText.toString());
+					scoredTexts.put(score, testKey);
 				}
 			}
 		}
-		return keyList;
-	}
 
-	private static void decrypt() {
-		List<Byte> encryptedText = readFile();
-		List<String> keys = generateKeys();
-		Map<Integer, String> scoredTexts = new HashMap<Integer, String>();
-
-		for (String key : keys) {
-			StringBuilder plainText = new StringBuilder();
-			char[] testKey = key.toCharArray();
-			int i = 0;
-
-			for (Byte character : encryptedText) {
-				if (i == 3)
-					i = 0;
-				char currChar = (char) (character ^ testKey[i]);
-				plainText.append(currChar);
-				i++;
-			}
-			int score = frequencyAnalysis(plainText.toString());
-			scoredTexts.put(score, key);
-		}
 		String rightKey = findKey(scoredTexts);
 		printCorrectText(rightKey);
 	}
@@ -82,16 +72,17 @@ public class ProblemTwo {
 		return score;
 	}
 
-	private static String findKey(Map<Integer, String> scores) {
-		Map.Entry<Integer, String> firstEntry = scores.entrySet().iterator().next();
+	private static String findKey(Map<Integer, char[]> scores) {
+		Map.Entry<Integer, char[]> firstEntry = scores.entrySet().iterator().next();
 		int largestKey = firstEntry.getKey();
 
-		for (Map.Entry<Integer, String> map : scores.entrySet()) {
+		for (Map.Entry<Integer, char[]> map : scores.entrySet()) {
 			int key = map.getKey();
 			if (key > largestKey)
 				largestKey = key;
 		}
-		return scores.get(largestKey);
+
+		return String.valueOf(scores.get(largestKey));
 	}
 	
 	private static void printCorrectText(String key) {
