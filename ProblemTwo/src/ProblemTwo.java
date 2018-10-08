@@ -1,8 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -15,24 +14,24 @@ public class ProblemTwo {
 		System.out.println("\nFinished in " + (end - start) + " ms");
 	}
 
-	private static List<Byte> readFile() {
-		List<Byte> bytes = new ArrayList<Byte>();
+	private static byte[] readFile() {
 		File file = new File("resources/cipher.txt");
+		byte[] bytes = new byte[(int) file.length()];
+		int i = 0;
 
 		try (Scanner scanner = new Scanner(file).useDelimiter(",")) {
 			while (scanner.hasNext()) {
-				int value = Integer.parseInt(scanner.next());
-				bytes.add((byte) value);
+				bytes[i++] = (byte) Integer.parseInt(scanner.next());
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
-		return bytes;
+		return Arrays.copyOf(bytes, i);
 	}
 
 	private static void decrypt() {
-		List<Byte> encryptedText = readFile();
+		byte[] encryptedText = readFile();
 		Map<Integer, char[]> scoredTexts = new HashMap<Integer, char[]>();
 		StringBuilder plainText = new StringBuilder();
 
@@ -86,7 +85,7 @@ public class ProblemTwo {
 	}
 	
 	private static void printCorrectText(String key) {
-		List<Byte> encryptedText = readFile();
+		byte[] encryptedText = readFile();
 		char[] keyBits = key.toCharArray();
 		int asciiSum = 0;
 		int i = 0;
