@@ -12,10 +12,25 @@ public class ProblemTwo {
 		decrypt();
 	}
 
+//	private static List<Character> readFile() {
+//		List<Character> characters = new ArrayList<Character>();
+//		File file = new File("resources/cipher.txt");
+//
+//		try (Scanner scanner = new Scanner(file).useDelimiter(",")) {
+//			while (scanner.hasNext()) {
+//				int value = Integer.parseInt(scanner.next());
+//				characters.add((char) value);
+//			}
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return characters;
+//	}
 	private static List<Byte> readFile() {
 		List<Byte> bytes = new ArrayList<Byte>();
 		File file = new File("resources/cipher.txt");
-
+		
 		try (Scanner scanner = new Scanner(file).useDelimiter(",")) {
 			while (scanner.hasNext()) {
 				int value = Integer.parseInt(scanner.next());
@@ -24,7 +39,7 @@ public class ProblemTwo {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
+		
 		return bytes;
 	}
 
@@ -41,9 +56,6 @@ public class ProblemTwo {
 		return keyList;
 	}
 
-	private static void findKey() {
-	}
-	
 	private static int frequencyAnalysis(String text) {
 		final String MOSTCOMMON = "etaoinshrdlu";
 		int score = 0;
@@ -59,7 +71,6 @@ public class ProblemTwo {
 	}
 
 	private static void decrypt() {
-		// Get encrypted file & all key combinations
 		List<Byte> encryptedText = readFile();
 		List<String> keys = generateKeys();
 		Map<Integer, String> textScores = new HashMap<Integer, String>();
@@ -72,11 +83,15 @@ public class ProblemTwo {
 			
 			for (Byte character : encryptedText) { // Create text by XOR between each char and its' corresponding key char
 				if (i == 3) i = 0;
-				plainText.append(character ^ testKey[i]);
+				char currChar = (char) (character ^ testKey[i]);
+				plainText.append(currChar);
 				i++;
 			}
 			int score = frequencyAnalysis(plainText.toString());
-			textScores.put(score, plainText.toString());
+			textScores.put(score, key);
 		}
+		
+		for (Map.Entry<Integer, String> entry : textScores.entrySet())
+		    System.out.println("Key: " + entry.getKey() + " / " + entry.getValue());
 	}
 }
