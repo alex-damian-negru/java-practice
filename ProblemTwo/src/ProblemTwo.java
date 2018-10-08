@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class ProblemTwo {
@@ -32,7 +30,6 @@ public class ProblemTwo {
 
 	private static void decrypt() {
 		byte[] encryptedText = readFile();
-		Map<Integer, char[]> scoredTexts = new HashMap<Integer, char[]>();
 		StringBuilder plainText = new StringBuilder();
 		int maxScore = 0;
 		char[] bestKey = null;
@@ -44,28 +41,36 @@ public class ProblemTwo {
 					char[] testKey = new char[] { a, b, c };
 					int i = 0;
 
+					boolean isValid = true;
 					for (Byte character : encryptedText) {
 						char currChar = (char) (character ^ testKey[i % 3]);
+						if (currChar < 32 || currChar > 127) {
+							isValid = false;
+							break;
+						}
+						
 						plainText.append(currChar);
 						i++;
 					}
+					if (!isValid)
+						continue;
 					int score = frequencyAnalysis(plainText.toString());
 					if (score > maxScore) {
 						maxScore = score;
 						bestKey = Arrays.copyOf(testKey, 3);
 					}
-					scoredTexts.put(score, testKey);
 				}
 			}
 		}
-		printCorrectText(String.valueOf(bestKey));
+		printCorrectText(encryptedText, String.valueOf(bestKey));
 	}
 	
 	private static int frequencyAnalysis(String text) {
 		final String MOSTCOMMON = "etaoinshrdlu";
 		int score = 0;
 
-		for (char letter : text.toLowerCase().toCharArray()) {
+		for (int i=0; i<text.length(); i++) {
+			char letter = Character.toLowerCase(text.charAt(i));
 			if (MOSTCOMMON.indexOf(letter) != -1)
 				score++;
 		}
@@ -73,19 +78,19 @@ public class ProblemTwo {
 		return score;
 	}
 	
-	private static void printCorrectText(String key) {
-		byte[] encryptedText = readFile();
+	private static void printCorrectText(byte[] encryptedText, String key) {
+		StringBuilder stringBuilder = new StringBuilder(encryptedText.length);
 		char[] keyBits = key.toCharArray();
 		int asciiSum = 0;
 		int i = 0;
 		
 		for (Byte character : encryptedText) {
-			if (i == 3) i = 0;
-			char currChar = (char) (character ^ keyBits[i]);
+			char currChar = (char) (character ^ keyBits[i % 3]);
 			asciiSum += currChar;
-			System.out.print(currChar);
+			stringBuilder.append(currChar);
 			i++;
 		}
+		System.out.print(stringBuilder.toString());
 		System.out.println("\nASCII Sum: " + asciiSum);
 	}
 }
