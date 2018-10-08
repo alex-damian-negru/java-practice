@@ -34,7 +34,9 @@ public class ProblemTwo {
 		byte[] encryptedText = readFile();
 		Map<Integer, char[]> scoredTexts = new HashMap<Integer, char[]>();
 		StringBuilder plainText = new StringBuilder();
-
+		int maxScore = 0;
+		char[] bestKey = null;
+		
 		for (char a = 'a'; a <= 'z'; a++) {
 			for (char b = 'a'; b <= 'z'; b++) {
 				for (char c = 'a'; c <= 'z'; c++) {
@@ -48,13 +50,15 @@ public class ProblemTwo {
 						i++;
 					}
 					int score = frequencyAnalysis(plainText.toString());
+					if (score > maxScore) {
+						maxScore = score;
+						bestKey = Arrays.copyOf(testKey, 3);
+					}
 					scoredTexts.put(score, testKey);
 				}
 			}
 		}
-
-		String rightKey = findKey(scoredTexts);
-		printCorrectText(rightKey);
+		printCorrectText(String.valueOf(bestKey));
 	}
 	
 	private static int frequencyAnalysis(String text) {
@@ -62,26 +66,11 @@ public class ProblemTwo {
 		int score = 0;
 
 		for (char letter : text.toLowerCase().toCharArray()) {
-			for (char common : MOSTCOMMON.toCharArray()) {
-				if (letter == common)
-					score++;
-			}
+			if (MOSTCOMMON.indexOf(letter) != -1)
+				score++;
 		}
 
 		return score;
-	}
-
-	private static String findKey(Map<Integer, char[]> scores) {
-		Map.Entry<Integer, char[]> firstEntry = scores.entrySet().iterator().next();
-		int largestKey = firstEntry.getKey();
-
-		for (Map.Entry<Integer, char[]> map : scores.entrySet()) {
-			int key = map.getKey();
-			if (key > largestKey)
-				largestKey = key;
-		}
-
-		return String.valueOf(scores.get(largestKey));
 	}
 	
 	private static void printCorrectText(String key) {
