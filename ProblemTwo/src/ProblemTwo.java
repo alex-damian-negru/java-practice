@@ -9,24 +9,12 @@ import java.util.Scanner;
 public class ProblemTwo {
 
 	public static void main(String[] args) {
+		long start = System.currentTimeMillis();
 		decrypt();
+		long end = System.currentTimeMillis();
+		System.out.println("\nFinished in " + (end - start) + "ms");
 	}
 
-//	private static List<Character> readFile() {
-//		List<Character> characters = new ArrayList<Character>();
-//		File file = new File("resources/cipher.txt");
-//
-//		try (Scanner scanner = new Scanner(file).useDelimiter(",")) {
-//			while (scanner.hasNext()) {
-//				int value = Integer.parseInt(scanner.next());
-//				characters.add((char) value);
-//			}
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return characters;
-//	}
 	private static List<Byte> readFile() {
 		List<Byte> bytes = new ArrayList<Byte>();
 		File file = new File("resources/cipher.txt");
@@ -56,6 +44,30 @@ public class ProblemTwo {
 		return keyList;
 	}
 
+	private static void decrypt() {
+		List<Byte> encryptedText = readFile();
+		List<String> keys = generateKeys();
+		Map<Integer, String> scoredTexts = new HashMap<Integer, String>();
+
+		for (String key : keys) {
+			StringBuilder plainText = new StringBuilder();
+			char[] testKey = key.toCharArray();
+			int i = 0;
+
+			for (Byte character : encryptedText) {
+				if (i == 3)
+					i = 0;
+				char currChar = (char) (character ^ testKey[i]);
+				plainText.append(currChar);
+				i++;
+			}
+			int score = frequencyAnalysis(plainText.toString());
+			scoredTexts.put(score, key);
+		}
+		String rightKey = findKey(scoredTexts);
+		printCorrectText(rightKey);
+	}
+	
 	private static int frequencyAnalysis(String text) {
 		final String MOSTCOMMON = "etaoinshrdlu";
 		int score = 0;
@@ -70,7 +82,7 @@ public class ProblemTwo {
 		return score;
 	}
 
-	private static int findKey(Map<Integer, String> scores) {
+	private static String findKey(Map<Integer, String> scores) {
 		Map.Entry<Integer, String> firstEntry = scores.entrySet().iterator().next();
 		int largestKey = firstEntry.getKey();
 
@@ -79,32 +91,19 @@ public class ProblemTwo {
 			if (key > largestKey)
 				largestKey = key;
 		}
-		return largestKey;
+		return scores.get(largestKey);
 	}
-
-	private static void decrypt() {
+	
+	private static void printCorrectText(String key) {
 		List<Byte> encryptedText = readFile();
-		List<String> keys = generateKeys();
-		Map<Integer, String> textScores = new HashMap<Integer, String>();
-
-		// Do XOR between the key and the values
-		for (String key : keys) {
-			StringBuilder plainText = new StringBuilder(); // Create new plainText
-			char[] testKey = key.toCharArray(); // Separate key to individual chars
-			int i = 0; // index for chars
-
-			for (Byte character : encryptedText) { // Create text by XOR between each char and its' corresponding key
-													// char
-				if (i == 3)
-					i = 0;
-				char currChar = (char) (character ^ testKey[i]);
-				plainText.append(currChar);
-				i++;
-			}
-			int score = frequencyAnalysis(plainText.toString());
-			textScores.put(score, key);
+		char[] keyBits = key.toCharArray();
+		int i = 0;
+		
+		for (Byte character : encryptedText) {
+			if (i == 3) i = 0;
+			char currChar = (char) (character ^ keyBits[i]);
+			System.out.print(currChar);
+			i++;
 		}
-		System.out.println(findKey(textScores));
-
 	}
 }
