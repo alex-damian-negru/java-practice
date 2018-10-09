@@ -54,7 +54,10 @@ public class ProblemOne {
 	}
 
 	public static void main(String args[]) {
+		long start = System.currentTimeMillis();
 		consecutivePrimeSum(1000000);
+		long end = System.currentTimeMillis();
+		System.out.println("\nFinished in " + (end - start) + " ms");
 	}
 
 }
